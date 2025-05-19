@@ -8,7 +8,7 @@ const nextConfig = (phase: string): NextConfig => {
     distDir: 'dist',
     output: 'export',
     assetPrefix: isLocal ? '' : '/nextjs/',
-    basePath: isLocal ? '' : '/nextjs/',
+    basePath: isLocal ? '' : '/nextjs',
     eslint: {
       ignoreDuringBuilds: true,
     },
