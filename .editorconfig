@@ -1,4 +1,6 @@
-# .editorconfig
+# EditorConfig helps maintain consistent coding styles for multiple developers working on the same project
+# See https://EditorConfig.org for more information
+
 root = true
 
 [*]
@@ -11,3 +13,6 @@ insert_final_newline = true
 
 [*.md]
 trim_trailing_whitespace = false
+
+[*.{js,ts,tsx,json,yml,yaml}]
+quote_type = single
