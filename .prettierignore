@@ -1,0 +1,7 @@
+# .prettierignore
+node_modules/
+dist/
+.next/
+.idea/
+.vscode/
+.DS_Store

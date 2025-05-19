@@ -1,0 +1,81 @@
+# ✅ Project Tasks: Where I’ve Worked Map App
+
+## Tasks
+
+- [ ] Task 1: Monorepo & Workspace Setup
+  - Initialize Bun monorepo with workspace support
+    - Create a `bunfig.toml` in the root with a `projects/` directory
+    - Add root `.gitignore`, `.editorconfig`, and `.prettierignore` files
+    - Initialize Git repository
+  - Set up root TypeScript configuration
+    - Add a strict `tsconfig.json` at the root
+    - Support path aliases if needed
+
+- [ ] Task 2: Linting, Formatting, and Git Hooks
+  - Configure ESLint with flat config
+    - Install `eslint`, `@eslint/js`, `eslint-plugin-import`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`, `@typescript-eslint/*`, and `eslint-config-next`
+    - Create `eslint.config.js` using flat config format
+    - Enable full support for TypeScript, React, and Next.js
+  - Integrate Prettier with ESLint
+    - Install `prettier`, `eslint-plugin-prettier`, `eslint-config-prettier`
+    - Add `.prettierrc` and extend ESLint config to run Prettier via lint
+  - Set up Husky git hooks
+    - Install Husky and enable hooks in `.husky/`
+    - Add `pre-commit` hook to run `bun lint`
+    - Add `commit-msg` hook to run `commitlint`
+  - Configure Commitlint with conventional commits
+    - Install `@commitlint/cli` and `@commitlint/config-conventional`
+    - Add `commitlint.config.js` extending `@commitlint/config-conventional`
+
+- [ ] Task 3: Next.js App Setup
+  - Scaffold new Next.js app in `/projects/nextjs`
+    - Use App Router (`/app`)
+    - Use TypeScript
+    - Configure build output to `/dist/nextjs`
+  - Set up Tailwind CSS
+    - Install and configure `tailwind.config.ts` and `postcss.config.js`
+    - Add base styles, dark mode, and color tokens for blue/gray theme
+  - Add reusable build script
+    - Add `bun build ./projects/nextjs` script to root `package.json`
+
+- [ ] Task 4: Map Sub-App Development
+  - Install and configure `react-simple-maps`
+    - Install package and set up global world map GeoJSON data
+    - Simplify GeoJSON as needed for performance
+  - Create `/map` route in Next.js
+    - Add `app/map/page.tsx` and page shell
+  - Build `WorldMap` component
+    - Render countries using `react-simple-maps`
+    - Style with solid fills and white borders
+    - Use `ZoomableGroup` for panning and zooming
+    - Display pins from `pins.json` with color differentiation
+  - Implement interactive zoom and highlight
+    - Clicking a pin zooms into its country
+    - Highlight selected country with different fill
+    - Display tooltip on pin only in zoomed view
+    - Add “Back to World View” button to reset zoom
+  - Build `PinList` component
+    - Show `label`, `company`, `year`, and optional `note`
+    - Filtered by selected country
+  - Load static pin data
+    - Store in `/public/data/pins.json`
+    - Load and memoize on client side
+    - Filter pins efficiently by country code
+  - Add animations with `framer-motion`
+    - Animate zoom transitions and highlight changes
+    - Animate list appearance and back button
+  - Style map and layout
+    - Dark mode by default
+    - Modern futuristic style using Tailwind
+    - Use blue, gray, and white for contrast and clarity
+
+- [ ] Task 5: Final Polish
+  - Make layout responsive for mobile and desktop
+    - Mobile: stack map over pin list
+    - Desktop: map on left (2/3), list on right (1/3)
+  - Optimize SVG performance on mobile
+    - Memoize heavy components
+    - Avoid unnecessary re-renders during zoom and drag
+  - Prepare for static export and deployment
+    - Set up `next.config.js` for static build
+    - Confirm `/dist/nextjs` output structure is compatible with Cloudflare Pages
