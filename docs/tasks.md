@@ -2,7 +2,7 @@
 
 ## Tasks
 
-- [ ] Task 1: Monorepo & Workspace Setup
+- [x] Task 1: Monorepo & Workspace Setup
   - Initialize Bun monorepo with workspace support
     - Create a `bunfig.toml` in the root with a `projects/` directory
     - Add root `.gitignore`, `.editorconfig`, and `.prettierignore` files
