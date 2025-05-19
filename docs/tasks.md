@@ -11,7 +11,7 @@
     - Add a strict `tsconfig.json` at the root
     - Support path aliases if needed
 
-- [ ] Task 2: Linting, Formatting, and Git Hooks
+- [x] Task 2: Linting, Formatting, and Git Hooks
   - Configure ESLint with flat config
     - Install `eslint`, `@eslint/js`, `eslint-plugin-import`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y`, `@typescript-eslint/*`, and `eslint-config-next`
     - Create `eslint.config.js` using flat config format
