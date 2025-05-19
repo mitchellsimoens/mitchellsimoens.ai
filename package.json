@@ -6,7 +6,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "bun build ./projects/nextjs",
+    "build": "bun run build:nextjs",
+    "build:nextjs": "bun --cwd=./projects/nextjs run build && mkdir -p dist && mv ./projects/nextjs/dist ./dist/nextjs",
     "lint": "eslint --config eslint.config.ts",
     "format": "bun format",
     "typecheck": "tsc --noEmit --pretty",

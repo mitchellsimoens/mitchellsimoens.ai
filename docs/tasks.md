@@ -27,7 +27,7 @@
     - Install `@commitlint/cli` and `@commitlint/config-conventional`
     - Add `commitlint.config.js` extending `@commitlint/config-conventional`
 
-- [ ] Task 3: Next.js App Setup
+- [x] Task 3: Next.js App Setup
   - Scaffold new Next.js app in `/projects/nextjs`
     - Use App Router (`/app`)
     - Use TypeScript

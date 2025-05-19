@@ -7,7 +7,9 @@ import importPluginConfigs from './.eslint/eslint-plugin-import';
 import reactConfigs from './.eslint/react';
 
 export default tseslint.config([
-  { ignores: ['node_modules/', 'dist/', '*.log', '.env', '.next/', 'out/'] },
+  {
+    ignores: ['**/node_modules/', '**/*.log', '**/*.env*', '**/.next/', '**/out/', '**/dist/'],
+  },
   ...reactConfigs,
   ...importPluginConfigs,
   ...coreConfigs,
