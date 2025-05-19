@@ -7,10 +7,10 @@
   "license": "MIT",
   "scripts": {
     "build": "bun build ./projects/nextjs",
-    "lint": "bun lint",
+    "lint": "eslint .",
     "format": "bun format",
     "typecheck": "tsc --noEmit --pretty",
-    "prepare": "husky install"
+    "prepare": "husky init"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
