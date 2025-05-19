@@ -5,9 +5,9 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
-import prettier from 'eslint-config-prettier';
+import prettierPlugin from 'eslint-plugin-prettier';
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
+/** @type {import('eslint').Linter.Config<Linter.RulesRecord>[]} */
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -18,9 +18,10 @@ export default [
       import: importPlugin,
       react,
       'react-hooks': reactHooks,
-      'jsx-a11y': jsxA11y
+      'jsx-a11y': jsxA11y,
+      prettier: prettierPlugin
     },
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['projects/**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
@@ -37,6 +38,5 @@ export default [
       'import/order': ['error', { 'alphabetize': { order: 'asc' } }],
       'prettier/prettier': 'error'
     }
-  },
-  prettier
+  }
 ];
