@@ -11,17 +11,11 @@ const MapPage = () => {
   return (
     <main className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-950 text-white">
       {/* Map Section */}
-      <section
-        className="w-full md:w-2/3 flex-shrink-0 flex items-stretch md:h-screen h-[60vh] overflow-x-auto overflow-y-hidden relative"
-        style={{ minHeight: '300px', maxHeight: '100vh' }}
-      >
+      <section className="w-full md:w-2/3 flex-shrink-0 flex items-stretch md:h-screen flex-[3_0_0%] min-h-0 overflow-hidden relative">
         <WorldMap selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
       </section>
       {/* Pin List Section */}
-      <aside
-        className="w-full md:w-1/3 flex-1 p-4 border-t md:border-t-0 md:border-l border-gray-800 bg-gray-900 overflow-y-auto h-[40vh] md:h-screen"
-        style={{ minHeight: '200px', maxHeight: '100vh' }}
-      >
+      <aside className="w-full md:w-1/3 flex-1 p-4 border-t md:border-t-0 md:border-l border-gray-800 bg-gray-900 overflow-y-auto min-h-0 flex-[2_0_0%]">
         <PinList selectedCountry={selectedCountry} />
       </aside>
     </main>
