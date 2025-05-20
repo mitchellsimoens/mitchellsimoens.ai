@@ -7,12 +7,24 @@ const isAbsoluteUrl = (src: string): boolean => {
   return /^([a-z][a-z\d+.-]*:)?\/\//i.test(src);
 };
 
+const joinUrl = (prefix: string, src: string): string => {
+  if (!prefix) {
+    return src;
+  }
+  // Remove trailing slash from prefix and leading slash from src
+  const cleanPrefix = prefix.replace(/\/+$/, '');
+  const cleanSrc = src.replace(/^\/+/, '');
+  return `${cleanPrefix}/${cleanSrc}`;
+};
+
 export type ImageProps = NextImageProps;
 
 const Image: React.FC<ImageProps> = (props) => {
   const { src, ...rest } = props;
-  const finalSrc = typeof src === 'string' && !isAbsoluteUrl(src) ? `${assetPrefix}${src}` : src;
-
+  let finalSrc = src;
+  if (typeof src === 'string' && !isAbsoluteUrl(src)) {
+    finalSrc = joinUrl(assetPrefix, src);
+  }
   return <NextImage src={finalSrc} {...rest} />;
 };
 
