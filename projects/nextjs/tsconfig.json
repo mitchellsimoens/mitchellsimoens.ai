@@ -29,13 +29,15 @@
     }
   },
   "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "../../dist/nestjs/types/**/*.ts",
     "../../dist/nextjs/types/**/*.ts",
     ".next/types/**/*.ts",
     "dist/types/**/*.ts",
-    "next-env.d.ts",
     "dist//types/**/*.ts"
   ],
   "exclude": [
