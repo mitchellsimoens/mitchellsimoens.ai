@@ -1,7 +1,16 @@
 'use client';
 
 import { AnimatePresence, motion, useSpring } from 'framer-motion';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 'react-simple-maps';
 
 import type { GeoData, Pin } from '../../types';
@@ -20,6 +29,8 @@ interface WorldMapProps {
   selectedCountry: string | null;
   setSelectedCountry: Dispatch<SetStateAction<string | null>>;
 }
+
+const MOBILE_BREAKPOINT = 768;
 
 const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
   const [selectedGeoId, setSelectedGeoId] = useState<string | null>(null);
@@ -62,6 +73,24 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
     fetchJson(pinsUrl).then(setPins);
   }, []);
 
+  const initialZoomRef = useRef<number>(1);
+  const initialCenterRef = useRef<[number, number]>([0, 20]);
+
+  // On mount, set a higher initial zoom and center for mobile
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT) {
+      initialZoomRef.current = 1.8;
+      initialCenterRef.current = [0, 25];
+      setZoom(1.8);
+      setCenter([0, 25]);
+    } else {
+      initialZoomRef.current = 1;
+      initialCenterRef.current = [0, 20];
+      setZoom(1);
+      setCenter([0, 20]);
+    }
+  }, []);
+
   const handlePinClick = (countryCode: string, geoId: string, coordinates: [number, number]) => {
     setSelectedCountry(countryCode);
     setSelectedGeoId(geoId);
@@ -72,95 +101,117 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
   const handleBack = () => {
     setSelectedCountry(null);
     setSelectedGeoId(null);
-    setZoom(1);
-    setCenter([0, 20]);
+    setZoom(initialZoomRef.current);
+    setCenter(initialCenterRef.current);
   };
+
+  // Memoize filtered pins for performance
+  const visiblePins = useMemo(
+    () => (selectedCountry ? pins.filter((pin) => pin.countryCode === selectedCountry) : pins),
+    [pins, selectedCountry],
+  );
+
+  // Memoize geographies for performance
+  const renderGeographies = useCallback(
+    (geographies: GeoData['features']) =>
+      geographies.map((geo, idx) => {
+        const geoCountryCode = geo.id;
+        const isSelected = selectedGeoId === geoCountryCode;
+        const isAnySelected = !!selectedGeoId;
+        const fill = isSelected ? '#38bdf8' : isAnySelected ? '#334155' : '#2563eb';
+        return (
+          <Geography
+            key={geo.id || idx}
+            geography={geo}
+            fill={fill}
+            stroke="#fff"
+            strokeWidth={0.5}
+            style={{
+              default: {
+                outline: 'none',
+                opacity: isAnySelected && !isSelected ? 0.4 : 1,
+                transition: 'opacity 0.3s, fill 0.3s',
+              },
+              hover: {
+                fill: isSelected ? '#38bdf8' : '#1e293b',
+                outline: 'none',
+                opacity: 1,
+              },
+              pressed: { outline: 'none' },
+            }}
+          />
+        );
+      }),
+    [selectedGeoId],
+  );
 
   if (!geoData) return <div>Loading map...</div>;
 
   return (
-    <div className="relative w-full h-[500px] md:h-[700px]">
+    <div
+      className="relative w-full h-full min-h-[300px]"
+      style={{ minHeight: '300px', height: '100%' }}
+    >
       <ComposableMap
         projectionConfig={{ scale: 150 }}
-        width={800}
-        height={500}
-        style={{ width: '100%', height: '100%' }}
+        width={1200}
+        height={600}
+        style={{ width: '100%', height: '100%', minWidth: 600, minHeight: 300 }}
       >
-        <ZoomableGroup zoom={animatedZoom} center={animatedCenter}>
+        <ZoomableGroup zoom={animatedZoom} center={animatedCenter} style={{ cursor: 'grab' }}>
           <Geographies geography={geoData}>
-            {({ geographies }: { geographies: GeoData['features'] }) =>
-              geographies.map((geo, idx) => {
-                const geoCountryCode = geo.id;
-                const isSelected = selectedGeoId === geoCountryCode;
-                const isAnySelected = !!selectedGeoId;
-                const fill = isSelected
-                  ? '#38bdf8' // bright blue highlight for selected
-                  : isAnySelected
-                    ? '#334155' // dimmed for unselected
-                    : '#2563eb'; // default world blue
-                return (
-                  <Geography
-                    key={geo.id || idx}
-                    geography={geo}
-                    fill={fill}
-                    stroke="#fff"
-                    strokeWidth={0.5}
-                    style={{
-                      default: {
-                        outline: 'none',
-                        opacity: isAnySelected && !isSelected ? 0.4 : 1,
-                        transition: 'opacity 0.3s, fill 0.3s',
-                      },
-                      hover: {
-                        fill: isSelected ? '#38bdf8' : '#1e293b',
-                        outline: 'none',
-                        opacity: 1,
-                      },
-                      pressed: { outline: 'none' },
-                    }}
-                  />
-                );
-              })
-            }
+            {({ geographies }: { geographies: GeoData['features'] }) => {
+              return renderGeographies(geographies);
+            }}
           </Geographies>
-          {pins.map((pin) => {
-            const coordinates: [number, number] = [pin.lng, pin.lat];
-            const pinColor = pin.exact ? '#38bdf8' : '#fbbf24'; // blue for exact, yellow for approximate
-            return (
-              <Marker key={pin.id} coordinates={coordinates}>
-                <motion.circle
-                  r={8}
-                  fill={selectedCountry === pin.countryCode ? '#0ea5e9' : pinColor}
-                  stroke="#fff"
-                  strokeWidth={2}
-                  whileHover={{ scale: 1.2 }}
-                  onClick={() => handlePinClick(pin.countryCode, pin.geoId, coordinates)}
-                  style={{ cursor: 'pointer' }}
-                />
-                <AnimatePresence>
-                  {selectedCountry === pin.countryCode && zoom > 1 && (
-                    <motion.g
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                    >
-                      <text
-                        x={16}
-                        y={4}
-                        fontSize={16}
-                        fill="#fff"
-                        stroke="#0ea5e9"
-                        strokeWidth={0.5}
-                        style={{ pointerEvents: 'none' }}
-                      >
-                        {pin.label}
-                      </text>
-                    </motion.g>
-                  )}
-                </AnimatePresence>
-              </Marker>
-            );
-          })}
+          <AnimatePresence>
+            {visiblePins.map((pin) => {
+              const coordinates: [number, number] = [pin.lng, pin.lat];
+              const pinColor = pin.exact ? '#38bdf8' : '#fbbf24';
+              return (
+                <motion.g
+                  key={pin.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Marker coordinates={coordinates}>
+                    <motion.circle
+                      r={8}
+                      fill={selectedCountry === pin.countryCode ? '#0ea5e9' : pinColor}
+                      stroke="#fff"
+                      strokeWidth={2}
+                      whileHover={{ scale: 1.2 }}
+                      onClick={() => handlePinClick(pin.countryCode, pin.geoId, coordinates)}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    <AnimatePresence>
+                      {selectedCountry === pin.countryCode && animatedZoom > 1 && (
+                        <motion.g
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 10 }}
+                        >
+                          <text
+                            x={16}
+                            y={4}
+                            fontSize={16}
+                            fill="#fff"
+                            stroke="#0ea5e9"
+                            strokeWidth={0.5}
+                            style={{ pointerEvents: 'none' }}
+                          >
+                            {pin.label}
+                          </text>
+                        </motion.g>
+                      )}
+                    </AnimatePresence>
+                  </Marker>
+                </motion.g>
+              );
+            })}
+          </AnimatePresence>
         </ZoomableGroup>
       </ComposableMap>
       {selectedCountry && (
@@ -179,4 +230,4 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
   );
 };
 
-export default WorldMap;
+export default memo(WorldMap);

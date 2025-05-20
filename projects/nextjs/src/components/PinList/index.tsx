@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import type { Pin } from '../../types';
 import { getAssetUrl } from '../../utils/assetUrl';
@@ -25,12 +25,13 @@ const PinList = ({ selectedCountry }: PinListProps) => {
     fetchJson(pinsUrl).then(setPins);
   }, []);
 
-  const filteredPins = selectedCountry
-    ? pins.filter((pin) => pin.countryCode === selectedCountry)
-    : pins;
+  const filteredPins = useMemo(
+    () => (selectedCountry ? pins.filter((pin) => pin.countryCode === selectedCountry) : pins),
+    [pins, selectedCountry],
+  );
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto">
       <h2 className="text-xl font-bold mb-4">Pins</h2>
       <ul className="space-y-4">
         <AnimatePresence>
@@ -55,4 +56,4 @@ const PinList = ({ selectedCountry }: PinListProps) => {
   );
 };
 
-export default PinList;
+export default memo(PinList);

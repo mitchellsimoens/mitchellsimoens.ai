@@ -69,13 +69,16 @@
     - Modern futuristic style using Tailwind
     - Use blue, gray, and white for contrast and clarity
 
-- [ ] Task 5: Final Polish
+- [x] Task 5: Final Polish
   - Make layout responsive for mobile and desktop
     - Mobile: stack map over pin list
     - Desktop: map on left (2/3), list on right (1/3)
+    - Height should be 100% even if that means the width is outside the viewport
+    - Allow scrolling map to see around
+    - When a country is selected, should hide pins outside the selected country
   - Optimize SVG performance on mobile
     - Memoize heavy components
     - Avoid unnecessary re-renders during zoom and drag
   - Prepare for static export and deployment
-    - Set up `next.config.js` for static build
+    - Set up `next.config.ts` for static build
     - Confirm `/dist/nextjs` output structure is compatible with Cloudflare Pages
