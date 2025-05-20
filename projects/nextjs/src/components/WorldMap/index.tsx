@@ -221,27 +221,6 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
                       onClick={() => handlePinClick(pin.countryCode, pin.geoId, coordinates)}
                       style={{ cursor: 'pointer' }}
                     />
-                    <AnimatePresence>
-                      {selectedCountry === pin.countryCode && animatedZoom > 1 && (
-                        <motion.g
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                        >
-                          <text
-                            x={16}
-                            y={4}
-                            fontSize={16}
-                            fill="#fff"
-                            stroke="#0ea5e9"
-                            strokeWidth={0.5}
-                            style={{ pointerEvents: 'none' }}
-                          >
-                            {pin.label}
-                          </text>
-                        </motion.g>
-                      )}
-                    </AnimatePresence>
                   </Marker>
                 </motion.g>
               );
