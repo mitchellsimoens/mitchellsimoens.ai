@@ -7,6 +7,7 @@ import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from 're
 import type { GeoData, Pin } from '../../types';
 import { getAssetUrl } from '../../utils/assetUrl';
 
+// Use getAssetUrl for runtime fetch so it works with assetPrefix in all envs
 const geoUrl = getAssetUrl('/data/world-geo.json');
 const pinsUrl = getAssetUrl('/data/pins.json');
 

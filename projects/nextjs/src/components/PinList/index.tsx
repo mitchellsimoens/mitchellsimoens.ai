@@ -1,15 +1,17 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import type { Pin } from '../../types';
+import { getAssetUrl } from '../../utils/assetUrl';
 
 interface PinListProps {
   selectedCountry: string | null;
 }
 
-const pinsUrl = '/data/pins.json';
+// Use getAssetUrl for runtime fetch so it works with assetPrefix in all envs
+const pinsUrl = getAssetUrl('/data/pins.json');
 
 const fetchJson = async (url: string) => {
   const res = await fetch(url);
@@ -19,7 +21,7 @@ const fetchJson = async (url: string) => {
 const PinList = ({ selectedCountry }: PinListProps) => {
   const [pins, setPins] = useState<Pin[]>([]);
 
-  useMemo(() => {
+  useEffect(() => {
     fetchJson(pinsUrl).then(setPins);
   }, []);
 
