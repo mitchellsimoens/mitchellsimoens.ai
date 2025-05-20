@@ -1,9 +1,8 @@
 import js from '@eslint/js';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
-// eslint-disable-next-line import/no-unresolved
 import { configs as tseslintConfigs, parser } from 'typescript-eslint';
 
-export default [
+const configs = [
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
@@ -27,3 +26,5 @@ export default [
   ...tseslintConfigs.recommended,
   ...tseslintConfigs.stylistic,
 ];
+
+export default configs;

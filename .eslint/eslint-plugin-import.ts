@@ -1,17 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+
 // @ts-expect-error
 import importPlugin from 'eslint-plugin-import';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import importPluginErrors from 'eslint-plugin-import/config/flat/errors';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import importPluginReact from 'eslint-plugin-import/config/flat/react';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import importPluginRecommended from 'eslint-plugin-import/config/flat/recommended';
 
-export default [
+const configs = [
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: { import: importPlugin },
@@ -47,3 +45,5 @@ export default [
   importPluginRecommended,
   importPlugin.configs.typescript,
 ];
+
+export default configs;

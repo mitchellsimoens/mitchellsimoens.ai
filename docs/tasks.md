@@ -38,7 +38,7 @@
   - Add reusable build script
     - Add `bun build ./projects/nextjs` script to root `package.json`
 
-- [ ] Task 4: Map Sub-App Development
+- [x] Task 4: Map Sub-App Development
   - Install and configure `react-simple-maps`
     - Install package and set up global world map GeoJSON data
     - Simplify GeoJSON as needed for performance
