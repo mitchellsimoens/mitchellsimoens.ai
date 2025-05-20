@@ -84,9 +84,10 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
       setZoom(1.8);
       setCenter([0, 25]);
     } else {
-      initialZoomRef.current = 1;
+      // Desktop: zoom in more for a larger map view
+      initialZoomRef.current = 1.4;
       initialCenterRef.current = [0, 20];
-      setZoom(1);
+      setZoom(1.4);
       setCenter([0, 20]);
     }
   }, []);
