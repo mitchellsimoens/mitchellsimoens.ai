@@ -1,5 +1,6 @@
 'use client';
 
+import { geoCentroid } from 'd3-geo';
 import { AnimatePresence, motion, useSpring } from 'framer-motion';
 import {
   Dispatch,
@@ -112,6 +113,12 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
     [pins, selectedCountry],
   );
 
+  // Type guard for geo.properties.name
+  const hasGeoName = (geo: unknown): geo is { properties: { name: string } } =>
+    typeof geo === 'object' &&
+    geo !== null &&
+    typeof (geo as { properties?: { name?: unknown } }).properties?.name === 'string';
+
   // Memoize geographies for performance
   const renderGeographies = useCallback(
     (geographies: GeoData['features']) =>
@@ -120,6 +127,29 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
         const isSelected = selectedGeoId === geoCountryCode;
         const isAnySelected = !!selectedGeoId;
         const fill = isSelected ? '#38bdf8' : isAnySelected ? '#334155' : '#2563eb';
+        // Compute centroid for zoom/center
+        const centroid = geoCentroid(geo as GeoJSON.Feature<GeoJSON.Geometry>);
+        const safeCentroid: [number, number] =
+          Array.isArray(centroid) &&
+          centroid.length === 2 &&
+          centroid.every((v) => typeof v === 'number')
+            ? [centroid[0], centroid[1]]
+            : [0, 20];
+        // Find pins for this country by geoId
+        const pinsForCountry = pins.filter((pin) => pin.geoId === geoCountryCode);
+        // Only allow selection if pins exist for this country
+        const handleCountryClick = () => {
+          if (pinsForCountry.length === 0) {
+            return;
+          }
+          // Use the actual countryCode from the pins for selection
+          setSelectedCountry(pinsForCountry[0].countryCode);
+          setSelectedGeoId(geoCountryCode);
+          setZoom(3);
+          setCenter(safeCentroid);
+        };
+        // Use type guard for aria-label
+        const ariaLabel = hasGeoName(geo) ? geo.properties.name : geoCountryCode;
         return (
           <Geography
             key={geo.id || idx}
@@ -140,10 +170,14 @@ const WorldMap = ({ selectedCountry, setSelectedCountry }: WorldMapProps) => {
               },
               pressed: { outline: 'none' },
             }}
+            onClick={handleCountryClick}
+            tabIndex={0}
+            aria-label={ariaLabel}
+            role="button"
           />
         );
       }),
-    [selectedGeoId],
+    [selectedGeoId, setSelectedCountry, setSelectedGeoId, setZoom, setCenter, pins],
   );
 
   if (!geoData) return <div>Loading map...</div>;
