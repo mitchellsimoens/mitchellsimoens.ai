@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from '../components/Image';
 
 export default function Home() {
   const assetPrefix = process.env.NEXT_PUBLIC_ASSET_PREFIX || '';
